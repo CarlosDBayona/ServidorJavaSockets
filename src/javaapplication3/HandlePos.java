@@ -49,23 +49,27 @@ public class HandlePos implements Runnable{
         socket.getInputStream());
       StringBuilder buffer=new StringBuilder();
       while (true) {
-          //String s=inputFromClient.readUTF();
          String Response ;
-         
+          System.out.println(this.serverSocket.isClosed());
+         if (this.serverSocket.isClosed()==true) {
+            this.serverSocket=new ServerSocket(10);
+        }
           while ((Response=in.readLine())!=null) {
               buffer.append(Response);
               area.append(Response+"\n");
-              
           }
-         inputFromClient.close();
+          in.close();
+          inputFromClient.close();
         //int direcciony = inputFromClient.readInt();
         //System.out.println(direccionx);
         //System.out.println(direcciony);
         //Sql(direccionx,direcciony);
       }
+     
     }
+        
     catch(IOException ex) {
-      System.err.println(ex);
+      
     }
     }
 
