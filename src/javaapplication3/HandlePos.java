@@ -57,13 +57,20 @@ public class HandlePos implements Runnable{
           while ((Response=in.readLine())!=null) {
               buffer.append(Response);
               area.append(Response+"\n");
+              Response=Response.replace("{", "");
+              Response=Response.replace("}", "");
+              Response=Response.replaceAll("\\s+","");
+              String Arreglo[]=Response.split(",");
+              float[] fs=new float[3];
+              for (int i = 0; i < Arreglo.length; i++) {
+                  String[] SubStri=Arreglo[i].split(":");
+                  fs[i]=Float.valueOf(SubStri[1]);
+              }
+              Edison e=new Edison(fs[0],fs[1],fs[2]);
+              Sql(e);
           }
           in.close();
           inputFromClient.close();
-        //int direcciony = inputFromClient.readInt();
-        //System.out.println(direccionx);
-        //System.out.println(direcciony);
-        //Sql(direccionx,direcciony);
       }
      
     }
@@ -80,16 +87,17 @@ public class HandlePos implements Runnable{
     public int getDirecciony() {
         return direcciony;
     }
-    public boolean Sql(int x,int y){
-        String url = "jdbc:mysql://localhost:3306/Datos";
+    public boolean Sql(Edison ed){
+        String url = "jdbc:mysql://localhost:3306/Edison";
         String username = "root";
         String password = "";
         try (Connection connection = (Connection) DriverManager.getConnection(url, username, password)) {
-            String query = " insert into Datos (x,y)"
-        + " values (?, ?)";
+            String query = " insert into Datos (temp,lux,sound)"
+        + " values (?, ?,?)";
         PreparedStatement preparedStmt = connection.prepareStatement(query);
-        preparedStmt.setInt(1, x);
-        preparedStmt.setInt(2, y);
+        preparedStmt.setFloat(1, ed.temp);
+        preparedStmt.setFloat(2, ed.lux);
+        preparedStmt.setFloat(3, ed.sound);
         preparedStmt.execute();
         connection.close();
         System.out.println("Database connected!");
