@@ -26,6 +26,7 @@ import javax.swing.*;
  * @author Carlos
  */
 public class HandlePos implements Runnable{
+    int i=0;
         private Socket socket;
         private int direccionx;
         int direcciony;
@@ -45,8 +46,11 @@ public class HandlePos implements Runnable{
       // Create a server socket
         System.out.println("Server started at " + new Date() + '\n');
       // Create data input and output streams
+      
       DataInputStream inputFromClient = new DataInputStream(
         socket.getInputStream());
+      //output stream
+      DataOutputStream dataOutputStream=new DataOutputStream(socket.getOutputStream());
       StringBuilder buffer=new StringBuilder();
       while (true) {
          String Response ;
@@ -55,19 +59,26 @@ public class HandlePos implements Runnable{
             this.serverSocket=new ServerSocket(10);
         }
           while ((Response=in.readLine())!=null) {
+              
               buffer.append(Response);
               area.append(Response+"\n");
               Response=Response.replace("{", "");
               Response=Response.replace("}", "");
               Response=Response.replaceAll("\\s+","");
               String Arreglo[]=Response.split(",");
-              float[] fs=new float[3];
+              float[] fs=new float[4];
               for (int i = 0; i < Arreglo.length; i++) {
                   String[] SubStri=Arreglo[i].split(":");
                   fs[i]=Float.valueOf(SubStri[1]);
               }
-              Edison e=new Edison(fs[0],fs[1],fs[2]);
+              Edison e=new Edison(fs[0],fs[1],fs[2],fs[3]);
               Sql(e);
+              if (i%2==0) {
+                  dataOutputStream.writeBytes("1");
+              }else{
+              dataOutputStream.writeBytes("0");
+              }
+              i++;
           }
           in.close();
           inputFromClient.close();
@@ -90,14 +101,15 @@ public class HandlePos implements Runnable{
     public boolean Sql(Edison ed){
         String url = "jdbc:mysql://localhost:3306/Edison";
         String username = "root";
-        String password = "";
+        String password = "root";
         try (Connection connection = (Connection) DriverManager.getConnection(url, username, password)) {
-            String query = " insert into Datos (temp,lux,sound)"
-        + " values (?, ?,?)";
+            String query = " insert into Datos (celsius,lux,thresh,absdeg)"
+        + " values (?, ?,?,?)";
         PreparedStatement preparedStmt = connection.prepareStatement(query);
-        preparedStmt.setFloat(1, ed.temp);
+        preparedStmt.setFloat(1, ed.celcius);
         preparedStmt.setFloat(2, ed.lux);
-        preparedStmt.setFloat(3, ed.sound);
+        preparedStmt.setFloat(3, ed.thresh);
+        preparedStmt.setFloat(4, ed.absdeg);
         preparedStmt.execute();
         connection.close();
         System.out.println("Database connected!");

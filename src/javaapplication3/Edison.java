@@ -10,27 +10,25 @@ package javaapplication3;
  * @author Carlos
  */
 public class Edison {
-    float temp;
+    float celcius;
     float lux;
-    float sound;
+    float thresh;
+    float absdeg;
 
-    public Edison(float temp, float lux, float sound) {
-        this.temp = temp;
+
+    public Edison(float celcius, float lux, float thresh, float absdeg) {
+        this.celcius = celcius;
         this.lux = lux;
-        this.sound = sound;
+        this.thresh = thresh;
+        this.absdeg = absdeg;
     }
 
-    @Override
-    public String toString() {
-        return "Edison{" + "temp=" + temp + ", lux=" + lux + ", sound=" + sound + '}';
+    public float getCelcius() {
+        return celcius;
     }
 
-    public float getTemp() {
-        return temp;
-    }
-
-    public void setTemp(float temp) {
-        this.temp = temp;
+    public void setCelcius(float celcius) {
+        this.celcius = celcius;
     }
 
     public float getLux() {
@@ -41,12 +39,25 @@ public class Edison {
         this.lux = lux;
     }
 
-    public float getSound() {
-        return sound;
+    public float getThresh() {
+        return thresh;
     }
 
-    public void setSound(float sound) {
-        this.sound = sound;
+    public void setThresh(float thresh) {
+        this.thresh = thresh;
+    }
+
+    public float getAbsdeg() {
+        return absdeg;
+    }
+
+    public void setAbsdeg(float absdeg) {
+        this.absdeg = absdeg;
+    }
+
+    @Override
+    public String toString() {
+        return "Edison{" + "celcius=" + celcius + ", lux=" + lux + ", thresh=" + thresh + ", absdeg=" + absdeg + '}';
     }
     
     

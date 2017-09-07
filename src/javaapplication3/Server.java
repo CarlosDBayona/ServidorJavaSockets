@@ -27,7 +27,7 @@ public class Server {
         frame.setVisible(true);
         area.append("Server Iniciado\n");
         ServerSocket serverSocket;
-        serverSocket = new ServerSocket(10);
+        serverSocket = new ServerSocket(5001);
         Thread t=new Thread(new HandlePos(serverSocket,area));    
         t.start();
         
