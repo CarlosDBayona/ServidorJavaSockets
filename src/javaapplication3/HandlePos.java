@@ -103,7 +103,7 @@ public class HandlePos implements Runnable{
         String username = "root";
         String password = "root";
         try (Connection connection = (Connection) DriverManager.getConnection(url, username, password)) {
-            String query = " insert into Datos (celsius,lux,thresh,absdeg)"
+            String query = " insert into DatosEdison (celsius,lux,thresh,absdeg)"
         + " values (?, ?,?,?)";
         PreparedStatement preparedStmt = connection.prepareStatement(query);
         preparedStmt.setFloat(1, ed.celcius);
