@@ -17,7 +17,10 @@ import java.net.Socket;
 import java.nio.charset.Charset;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Date;
 import javax.swing.*;
 
@@ -26,7 +29,6 @@ import javax.swing.*;
  * @author Carlos
  */
 public class HandlePos implements Runnable{
-    int i=0;
         private Socket socket;
         private int direccionx;
         int direcciony;
@@ -73,11 +75,8 @@ public class HandlePos implements Runnable{
               }
               Edison e=new Edison(fs[0],fs[1],fs[2],fs[3]);
               Sql(e);
-              if (i%2==0) {
-                  dataOutputStream.writeBytes("1");
-              }else{
-              dataOutputStream.writeBytes("0");
-              }
+              int i=LedStatus();
+              dataOutputStream.writeBytes(String.valueOf(i));
               i++;
           }
           in.close();
@@ -117,5 +116,31 @@ public class HandlePos implements Runnable{
             throw new IllegalStateException("Cannot connect the database!", e);
         }
         return true;
+    }
+    public int LedStatus(){
+        int value=0;
+        try
+    { 
+        Class.forName("com.mysql.jdbc.Driver").newInstance();
+      String myUrl = "jdbc:mysql://localhost:3306/Edison?useLegacyDatetimeCode=false&serverTimezone=UTC";
+      java.sql.Connection conn = DriverManager.getConnection(myUrl, "root", "root");
+      String query = "SELECT absdeg,hora FROM DatosEdison order by id desc limit 1";
+      Statement st = conn.createStatement();
+      ResultSet rs = st.executeQuery(query);
+      while (rs.next())
+      {
+          value=rs.getInt("estado");
+      }
+        rs.close();
+         st.close();
+         conn.close();
+    }
+    catch (Exception e)
+    {
+      System.err.println("Got an exception! ");
+      System.err.println(e.getCause());
+    }
+    
+        return value;
     }
 }
