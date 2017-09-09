@@ -122,7 +122,7 @@ public class HandlePos implements Runnable{
         try
     { 
         Class.forName("com.mysql.jdbc.Driver").newInstance();
-      String myUrl = "jdbc:mysql://localhost:3306/Edison?useLegacyDatetimeCode=false&serverTimezone=UTC";
+      String myUrl = "jdbc:mysql://localhost:3306/Edison";
       java.sql.Connection conn = DriverManager.getConnection(myUrl, "root", "root");
       String query = "SELECT absdeg,hora FROM DatosEdison order by id desc limit 1";
       Statement st = conn.createStatement();
